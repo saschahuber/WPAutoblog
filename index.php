@@ -23,6 +23,6 @@ include('class/MetaBoxPostListRegisterHook.php');
 include('class/MetaBoxRegisterHook.php');
 include('class/SourcePostTypeRegisterHook.php');
 
-include('class/job/importer/WordpressFeedImporterJob.php');
+include('class/job/FeedImporterJob.php');
 
 ?>
