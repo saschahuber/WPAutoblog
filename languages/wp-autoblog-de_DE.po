@@ -1,0 +1,93 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"X-Generator: Poedit 2.4.1\n"
+
+msgid "Autoblog sources"
+msgstr ""
+
+msgid "Autoblog source"
+msgstr ""
+
+msgid "All sources"
+msgstr ""
+
+msgid "View source"
+msgstr ""
+
+msgid "Add New source"
+msgstr ""
+
+msgid "Add New"
+msgstr ""
+
+msgid "Edit source"
+msgstr ""
+
+msgid "Update source"
+msgstr ""
+
+msgid "Search source"
+msgstr ""
+
+msgid "Not Found"
+msgstr ""
+
+msgid "Not found in Trash"
+msgstr ""
+
+msgid "autoblog-source"
+msgstr ""
+
+msgid "Wordpress feed"
+msgstr ""
+
+msgid "Unknown source type"
+msgstr ""
+
+msgid "Source URL"
+msgstr ""
+
+msgid "Source keywords (separated by \";\")"
+msgstr ""
+
+msgid "Source credit"
+msgstr ""
+
+msgid "Is active?"
+msgstr "Ist aktiv?"
+
+msgid "Auto publish?"
+msgstr "Automatisch veröffentlichen?"
+
+msgid "Source type"
+msgstr ""
+
+msgid "From which url should the new content be imported? For wordpress-sites this is usually \"[WORDPRESS_URL]/feed\" or \"[WORDPRESS_URL]/[CATEGORY]/feed\"."
+msgstr ""
+
+msgid "Give some keywords that the post must contain to be imported (separated by \";\"). Leave blank, if every post of the feed should be imported."
+msgstr ""
+
+msgid "Give credit to the content-source. Enter something like \"This post was originally released on [SOURCE_NAME]\". Can containe shortcodes.<br/>Leave blank if no credit-message should be displayed at the end of the post."
+msgstr ""
+
+msgid "Should posts be currently imported from this source?"
+msgstr ""
+
+msgid "Should imported posts get the post status \"published\" automatically after importing or the status \"pending\"?"
+msgstr ""
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nein"
