@@ -15,9 +15,9 @@ function wpab_load_plugin_textdomain() {
 }
 add_action( 'plugins_loaded', 'wpab_load_plugin_textdomain' );
 
-include('class/OptionsProvider.php');
 include('class/SourceMetaProvider.php');
-include('class/Settings.php');
+#include('class/OptionsProvider.php');
+#include('class/Settings.php');
 
 include('class/MetaBoxPostListRegisterHook.php');
 include('class/MetaBoxRegisterHook.php');
