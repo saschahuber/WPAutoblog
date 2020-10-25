@@ -16,7 +16,9 @@ class WPAB_SourceMetaProvider{
 	}
 	
 	public function get_source_types(){
-		return array('wordpress_feed');
+		return array(
+		'wordpress_feed'
+		);
 	}
 }
 

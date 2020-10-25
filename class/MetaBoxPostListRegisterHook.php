@@ -15,6 +15,7 @@ class WPAB_MetaBoxPostListRegisterHook{
 		$columns['wpab_source_type']  = __('Source type', 'wp-autoblog');
 		$columns['wpab_source_is_active']  = __('Is active?', 'wp-autoblog');
 		$columns['wpab_source_auto_publish']  = __('Auto publish?', 'wp-autoblog');
+		$columns['wpab_source_links_noindex']  = __('Add noindex to links??', 'wp-autoblog');
 		return $columns;
 
 	}
@@ -34,6 +35,10 @@ class WPAB_MetaBoxPostListRegisterHook{
 		}
 		if( $column_name == 'wpab_source_auto_publish' ) {
 			$source_auto_publish = get_post_meta( $post_id, 'wpab_source_auto_publish', true );
+			if( $source_auto_publish == 'on' ){ echo __('Yes', 'wp-autoblog'); } else { echo __('No', 'wp-autoblog'); }
+		}
+		if( $column_name == 'wpab_source_links_noindex' ) {
+			$source_auto_publish = get_post_meta( $post_id, 'wpab_source_links_noindex', true );
 			if( $source_auto_publish == 'on' ){ echo __('Yes', 'wp-autoblog'); } else { echo __('No', 'wp-autoblog'); }
 		}
 	}

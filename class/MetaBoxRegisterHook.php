@@ -11,11 +11,15 @@ class WPAB_MetaBoxRegisterHook{
 	
 	function wpab_add_source_metaboxes() {
 		add_meta_box('wpab_source_url', __('Source URL', 'wp-autoblog'), array($this, 'wpab_source_url'), 'autoblog-source', 'advanced', 'default');
+		add_meta_box('wpab_source_feed_url', __('Source Feed-URL', 'wp-autoblog'), array($this, 'wpab_source_feed_url'), 'autoblog-source', 'advanced', 'default');
 		add_meta_box('wpab_source_keywords', __('Source keywords (separated by ";")', 'wp-autoblog'), array($this, 'wpab_source_keywords'), 'autoblog-source', 'advanced', 'default');
 		add_meta_box('wpab_source_credit_message', __('Source credit', 'wp-autoblog'), array($this, 'wpab_source_credit_message'), 'autoblog-source', 'advanced', 'default');
 		add_meta_box('wpab_source_is_active', __('Is active?', 'wp-autoblog'), array($this, 'wpab_source_is_active'), 'autoblog-source', 'advanced', 'default');
 		add_meta_box('wpab_source_auto_publish', __('Auto publish?', 'wp-autoblog'), array($this, 'wpab_source_auto_publish'), 'autoblog-source', 'advanced', 'default');
+		add_meta_box('wpab_source_links_noindex', __('Add noindex to links?', 'wp-autoblog'), array($this, 'wpab_source_links_noindex'), 'autoblog-source', 'advanced', 'default');
 		add_meta_box('wpab_source_type', __('Source type', 'wp-autoblog'), array($this, 'wpab_source_type'), 'autoblog-source', 'advanced', 'default');
+		add_meta_box('wpab_source_post_type', __('Source post type', 'wp-autoblog'), array($this, 'wpab_source_post_type'), 'autoblog-source', 'advanced', 'default');
+		add_meta_box('wpab_source_author_id', __('Source author', 'wp-autoblog'), array($this, 'wpab_source_author_id'), 'autoblog-source', 'advanced', 'default');
 	}
 	
 	function wpab_source_url() {
@@ -23,8 +27,18 @@ class WPAB_MetaBoxRegisterHook{
 		wp_nonce_field( basename( __FILE__ ), 'wpab_source_url_field' );
 		$source_url = get_post_meta( $post->ID, 'wpab_source_url', true );
 		?>
+			<p><?php echo __('What is the url to the sources homepage?', 'wp-autoblog'); ?></p>
+			<input type="text" name="wpab_source_url" value="<?php echo esc_textarea( $source_url ); ?>" class="widefat">
+		<?php
+	}
+	
+	function wpab_source_feed_url() {
+		global $post;
+		wp_nonce_field( basename( __FILE__ ), 'wpab_source_feed_url_field' );
+		$source_feed_url = get_post_meta( $post->ID, 'wpab_source_feed_url', true );
+		?>
 			<p><?php echo __('From which url should the new content be imported? For wordpress-sites this is usually "[WORDPRESS_URL]/feed" or "[WORDPRESS_URL]/[CATEGORY]/feed".', 'wp-autoblog'); ?></p>
-			<input type="text" name="wpab_source_url" value=" <?php echo esc_textarea( $source_url ); ?>" class="widefat">
+			<input type="text" name="wpab_source_feed_url" value="<?php echo esc_textarea( $source_feed_url ); ?>" class="widefat">
 		<?php
 	}
 	
@@ -34,7 +48,7 @@ class WPAB_MetaBoxRegisterHook{
 		$source_keywords = get_post_meta( $post->ID, 'wpab_source_keywords', true );
 		?>
 			<p><?php echo __('Give some keywords that the post must contain to be imported (separated by ";"). Leave blank, if every post of the feed should be imported.', 'wp-autoblog'); ?></p>
-			<input type="text" name="wpab_source_keywords" value=" <?php echo esc_textarea( $source_keywords ); ?>" class="widefat">
+			<input type="text" name="wpab_source_keywords" value="<?php echo esc_textarea( $source_keywords ); ?>" class="widefat">
 		<?php
 	}
 	
@@ -45,7 +59,7 @@ class WPAB_MetaBoxRegisterHook{
 		?>
 			<p><?php echo __('Give credit to the content-source. Enter something like "This post was originally released on [SOURCE_NAME]". Can containe shortcodes.<br/>
 			Leave blank if no credit-message should be displayed at the end of the post.', 'wp-autoblog'); ?></p>
-			<input type="text" name="wpab_source_credit_message" value=" <?php echo esc_textarea( $source_credit ); ?>" class="widefat">
+			<input type="text" name="wpab_source_credit_message" value="<?php echo esc_textarea( $source_credit ); ?>" class="widefat">
 		<?php
 	}
 	
@@ -69,16 +83,64 @@ class WPAB_MetaBoxRegisterHook{
 		<?php
 	}
 	
+	function wpab_source_links_noindex() {
+		global $post;
+		wp_nonce_field( basename( __FILE__ ), 'wpab_source_links_noindex_field' );
+		$links_noindex = get_post_meta( $post->ID, 'wpab_source_links_noindex', true );
+		?>
+			<p><?php echo __('Should the noindex-tag be added to all links in an imported post that do not point to your websites url?', 'wp-autoblog'); ?></p>
+			<input type="checkbox" name="wpab_source_links_noindex" <?php echo ($links_noindex?'checked':''); ?>>
+		<?php
+	}
+	
 	function wpab_source_type() {
 		global $post;
 		wp_nonce_field( basename( __FILE__ ), 'wpab_source_type_field' );
 		$wpab_source_type = get_post_meta($post->ID, 'wpab_source_type', true);
 		?>
-		<select name="wpab_source_type">
-			<?php foreach($this->source_meta_provider->get_source_types() as $source_type): ?>
-				<option value="<?php echo $source_type; ?>" <?php selected($wpab_source_type, $source_type); ?>><? echo $this->source_meta_provider->get_source_type_label($source_type); ?></option>
-			<?php endforeach; ?>
-		</select>
+			<select name="wpab_source_type">
+				<?php foreach($this->source_meta_provider->get_source_types() as $source_type): ?>
+					<option value="<?php echo $source_type; ?>" <?php selected($wpab_source_type, $source_type); ?>><? echo $this->source_meta_provider->get_source_type_label($source_type); ?></option>
+				<?php endforeach; ?>
+			</select>
+		<?php
+	}
+	
+	function wpab_source_post_type() {
+		global $post;
+		wp_nonce_field( basename( __FILE__ ), 'wpab_source_post_type_field' );
+		$wpab_source_post_type = get_post_meta($post->ID, 'wpab_source_post_type', true);
+		
+		$post_types = get_post_types_by_support( array( 'title', 'editor'));
+		
+		?>
+			<p><?php echo __('Which post type should imported posts be added to?', 'wp-autoblog'); ?></p>
+			<select name="wpab_source_post_type">
+				<?php foreach(array_keys($post_types) as $key): ?>
+					<?php
+						$post_type = get_post_types( array('name' => $post_types[$key]), 'objects' )[$post_types[$key]];
+					?>
+					<option value="<?php echo $post_type->name; ?>" <?php selected($wpab_source_post_type, $post_type->name); ?>><? echo $post_type->labels->singular_name; ?></option>
+				<?php endforeach; ?>
+			</select>
+		<?php
+	}
+	
+	function wpab_source_author_id() {
+		global $post;
+		wp_nonce_field( basename( __FILE__ ), 'wpab_source_author_id_field' );
+		$wpab_source_author_id = get_post_meta($post->ID, 'wpab_source_author_id', true);
+		
+		$users = get_users();
+		
+		?>
+			<p><?php echo __('Which author should the imported posts be attached to?', 'wp-autoblog'); ?></p>
+			<select name="wpab_source_author_id">
+				<option value="null" <?php selected($wpab_source_author_id, 'null'); ?>><? echo __('None', 'wp-autoblog'); ?></option>
+				<?php foreach($users as $user): ?>
+					<option value="<?php echo $user->id; ?>" <?php selected($wpab_source_author_id, $user->id); ?>><? echo $user->display_name; ?></option>
+				<?php endforeach; ?>
+			</select>
 		<?php
 	}
 	
@@ -99,23 +161,36 @@ class WPAB_MetaBoxRegisterHook{
 
 		$meta_fields = array(
 			array('field' => 'wpab_source_url', 'type' => 'text'),
+			array('field' => 'wpab_source_feed_url', 'type' => 'text'),
 			array('field' => 'wpab_source_keywords', 'type' => 'text'),
-			array('field' => 'wpab_source_credit_message', 'type' => 'text'),
+			array('field' => 'wpab_source_credit_message', 'type' => 'html'),
 			array('field' => 'wpab_source_is_active', 'type' => 'bool'),
 			array('field' => 'wpab_source_auto_publish', 'type' => 'bool'),
-			array('field' => 'wpab_source_type', 'type' => null)
+			array('field' => 'wpab_source_links_noindex', 'type' => 'bool'),
+			array('field' => 'wpab_source_type', 'type' => null),
+			array('field' => 'wpab_source_post_type', 'type' => null),
+			array('field' => 'wpab_source_author_id', 'type' => null)
 		);
 
 		$source_meta = array();
 		
 		foreach($meta_fields as $field){
+			//Clean checkboxes
+			if($field['type'] == 'bool'){
+				delete_post_meta($post_id, $field['field']);
+			}
+			
 			if ( ! isset( $_POST[$field['field']] ) || ! wp_verify_nonce( $_POST[$field['field'].'_field'], basename(__FILE__) ) ) {
-				return $post_id;
+				continue;
 			}
 			
 			switch($field['type']){
-				case "text":
+				case 'text':
+				case 'bool':
 					$source_meta[$field['field']] = esc_textarea( $_POST[$field['field']] );
+					break;
+				case 'html':
+					$source_meta[$field['field']] = $_POST[$field['field']];
 					break;
 				default:
 					$source_meta[$field['field']] = $_POST[$field['field']];
