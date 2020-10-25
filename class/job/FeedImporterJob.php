@@ -20,7 +20,6 @@ class WPAB_FeedImporterJob{
 }
 
 function wpab_import_job(){
-	echo "do_import_job";
 	$wpab_feed_importer_job = new WPAB_FeedImporterJob();
 	$wpab_feed_importer_job->import();
 }

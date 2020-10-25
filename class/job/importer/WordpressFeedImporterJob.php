@@ -34,14 +34,42 @@ class WPAB_WordpressFeedImporterJob{
 		return get_posts( $args );
 	}
 	
+	public function get_keywords($feed_source){
+		$keyword_data = get_post_meta($feed_source->ID, 'wpab_source_keywords', true);
+		$keywords = array();
+		foreach(explode(';', $keyword_data) as $data_item){
+			$keyword = trim($data_item);
+			if(!empty($keyword)){
+				array_push($keywords, $keyword);
+			}
+		}
+		return $keywords;
+	}
+	
 	public function import_from_feed($feed_source){
 		$feed_url = get_post_meta($feed_source->ID, 'wpab_source_feed_url', true);
 		$feed_items = $this->get_feed($feed_url);
+		
+		$keywords = $this->get_keywords($feed_source);
+		
 		foreach($feed_items as $feed_item){
-			if(!$this->post_exists($feed_item['link'])){
+			if(!$this->post_exists($feed_item['link']) && $this->contains_keywords($feed_item, $keywords)){
 				$this->create_post($feed_item, $feed_source);
 			}
 		}
+	}
+	
+	/**
+	 *Checks if the item's content contains at least one of the given keywords (case insensitive)
+	*/
+	public function contains_keywords($feed_item, $keywords){
+		$content = $feed_item['content'];
+		foreach($keywords as $keyword){
+			if(stripos($content, $keyword) !== false){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	function get_feed($feed_url){
@@ -114,6 +142,9 @@ class WPAB_WordpressFeedImporterJob{
 			#$content = $this->save_rseo_nofollow($content)
 		}
 		$date = date('Y-m-d H:i:s', $feed_item['date']);
+		
+		
+		$content = apply_filters('wpab_imported_content' , $content);
 		
 		$post = array(
 			'post_title' => $feed_item['title'],

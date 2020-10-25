@@ -17,7 +17,6 @@ class WPAB_MetaBoxPostListRegisterHook{
 		$columns['wpab_source_auto_publish']  = __('Auto publish?', 'wp-autoblog');
 		$columns['wpab_source_links_noindex']  = __('Add noindex to links??', 'wp-autoblog');
 		return $columns;
-
 	}
 
 	function create_table_content( $column_name, $post_id ) {
