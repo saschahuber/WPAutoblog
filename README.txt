@@ -14,7 +14,14 @@ WP Autoblog lets you import content from various sources.
 == Description ==
 
 WP Autoblog lets you import content from various sources.
- 
+
+Import posts from multiple sources to fill your blog with content!
+
+Custom content filter:
+
+Add a filter to process the imported content:
+add_filter('wpab_imported_content', 'my_processing_function');
+
 == Installation ==
  
 == Changelog ==
