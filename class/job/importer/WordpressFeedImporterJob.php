@@ -55,7 +55,6 @@ class WPAB_WordpressFeedImporterJob{
 				$title = (string) $entry->title;
 				$link = (string) $entry->link;
 				//$content = (string) $entry->encoded;
-				
 				$content = (string) $entry->children("content", true);
 				
 				$date = date_create_from_format('D, d M Y H:i:s O', $entry->pubDate);
@@ -66,7 +65,6 @@ class WPAB_WordpressFeedImporterJob{
 					'content' => $content,
 					'date' => $date->getTimeStamp()
 				);
-				
 				array_push($posts, $item);
 			}
 		}
@@ -82,12 +80,10 @@ class WPAB_WordpressFeedImporterJob{
 					'link' => $link,
 					'content' => $content,
 					'date' => $date,
-				);
-				
+				);		
 				array_push($posts, $item);
 			}
 		}
-		
 		return $posts;
 	}
 
@@ -104,7 +100,7 @@ class WPAB_WordpressFeedImporterJob{
 		
 		$post_status = $auto_publish ? 'publish' : 'pending';
 		
-		#$author_id = get_post_meta($feed_source->ID, 'wpab_source_author_id', true);
+		$author_id = get_post_meta($feed_source->ID, 'wpab_source_author_id', true);
 		
 		if($author_id == 'null'){
 			$author_id = null;
@@ -117,7 +113,6 @@ class WPAB_WordpressFeedImporterJob{
 		if($links_noindex){
 			#$content = $this->save_rseo_nofollow($content)
 		}
-		
 		$date = date('Y-m-d H:i:s', $feed_item['date']);
 		
 		$post = array(
@@ -132,22 +127,18 @@ class WPAB_WordpressFeedImporterJob{
 				'wpab_imported_post_url' => $feed_item['link']
 			)
 		);
-		
-		print_r($post);
-		
 		$post_id = wp_insert_post($post);
 	}
 	
 	function save_rseo_nofollow($content) {
-		$content = preg_replace_callback('~<(a\s[^>]+)>~isU', "cb2", $content);
+		$content = preg_replace_callback('~<(a\s[^>]+)>~isU', array($this, 'replace_link_nofollow'), $content);
 		return $content;
 	}
 
-	function cb2($match) { 
-		list($original, $tag) = $match;   // regex match groups
-
-		$my_folder =  "/";       // re-add quirky config here
-		$blog_url = "https://smarthome-blogger.de";
+	function replace_link_nofollow($match) { 
+		list($original, $tag) = $match;
+		$my_folder =  "/";
+		$blog_url = get_site_url();
 
 		if (strpos($tag, "nofollow")) {
 			return $original;
@@ -172,7 +163,6 @@ class WPAB_WordpressFeedImporterJob{
 		   'post_status' => array('publish', 'draft', 'trash', 'pending', 'auto-draft')
 		);
 		$query = new WP_Query($args);
-		
 		return $query->have_posts();
 	}
 }
