@@ -25,7 +25,7 @@ class WPAB_MetaBoxRegisterHook{
 	function wpab_source_url() {
 		global $post;
 		wp_nonce_field( basename( __FILE__ ), 'wpab_source_url_field' );
-		$source_url = get_post_meta( $post->ID, 'wpab_source_url', true );
+		$source_url = esc_url(get_post_meta( $post->ID, 'wpab_source_url', true ));
 		?>
 			<p><?php echo __('What is the url to the sources homepage?', 'wp-autoblog'); ?></p>
 			<input type="text" name="wpab_source_url" value="<?php echo esc_textarea( $source_url ); ?>" class="widefat">
@@ -35,7 +35,7 @@ class WPAB_MetaBoxRegisterHook{
 	function wpab_source_feed_url() {
 		global $post;
 		wp_nonce_field( basename( __FILE__ ), 'wpab_source_feed_url_field' );
-		$source_feed_url = get_post_meta( $post->ID, 'wpab_source_feed_url', true );
+		$source_feed_url = esc_url(get_post_meta( $post->ID, 'wpab_source_feed_url', true ));
 		?>
 			<p><?php echo __('From which url should the new content be imported? For wordpress-sites this is usually "[WORDPRESS_URL]/feed" or "[WORDPRESS_URL]/[CATEGORY]/feed".', 'wp-autoblog'); ?></p>
 			<input type="text" name="wpab_source_feed_url" value="<?php echo esc_textarea( $source_feed_url ); ?>" class="widefat">
@@ -45,7 +45,7 @@ class WPAB_MetaBoxRegisterHook{
 	function wpab_source_keywords() {
 		global $post;
 		wp_nonce_field( basename( __FILE__ ), 'wpab_source_keywords_field' );
-		$source_keywords = get_post_meta( $post->ID, 'wpab_source_keywords', true );
+		$source_keywords = esc_textarea(get_post_meta( $post->ID, 'wpab_source_keywords', true ));
 		?>
 			<p><?php echo __('Give some keywords that the post must contain to be imported (separated by ";"). Leave blank, if every post of the feed should be imported.', 'wp-autoblog'); ?></p>
 			<input type="text" name="wpab_source_keywords" value="<?php echo esc_textarea( $source_keywords ); ?>" class="widefat">
@@ -55,7 +55,7 @@ class WPAB_MetaBoxRegisterHook{
 	function wpab_source_credit_message() {
 		global $post;
 		wp_nonce_field( basename( __FILE__ ), 'wpab_source_credit_message_field' );
-		$source_credit = get_post_meta( $post->ID, 'wpab_source_credit_message', true );
+		$source_credit = esc_textarea(get_post_meta( $post->ID, 'wpab_source_credit_message', true ));
 		?>
 			<p><?php echo __('Give credit to the content-source. Enter something like "This post was originally released on [SOURCE_NAME]". Can containe shortcodes.<br/>
 			Leave blank if no credit-message should be displayed at the end of the post.', 'wp-autoblog'); ?></p>
@@ -160,16 +160,16 @@ class WPAB_MetaBoxRegisterHook{
         }
 
 		$meta_fields = array(
-			array('field' => 'wpab_source_url', 'type' => 'text'),
-			array('field' => 'wpab_source_feed_url', 'type' => 'text'),
-			array('field' => 'wpab_source_keywords', 'type' => 'text'),
-			array('field' => 'wpab_source_credit_message', 'type' => 'html'),
-			array('field' => 'wpab_source_is_active', 'type' => 'bool'),
-			array('field' => 'wpab_source_auto_publish', 'type' => 'bool'),
-			array('field' => 'wpab_source_links_noindex', 'type' => 'bool'),
-			array('field' => 'wpab_source_type', 'type' => null),
-			array('field' => 'wpab_source_post_type', 'type' => null),
-			array('field' => 'wpab_source_author_id', 'type' => null)
+			array('name' => 'wpab_source_url', 'type' => 'url'),
+			array('name' => 'wpab_source_feed_url', 'type' => 'url'),
+			array('name' => 'wpab_source_keywords', 'type' => 'text'),
+			array('name' => 'wpab_source_credit_message', 'type' => 'html'),
+			array('name' => 'wpab_source_is_active', 'type' => 'bool'),
+			array('name' => 'wpab_source_auto_publish', 'type' => 'bool'),
+			array('name' => 'wpab_source_links_noindex', 'type' => 'bool'),
+			array('name' => 'wpab_source_type', 'type' => null),
+			array('name' => 'wpab_source_post_type', 'type' => null),
+			array('name' => 'wpab_source_author_id', 'type' => null)
 		);
 
 		$source_meta = array();
@@ -177,23 +177,26 @@ class WPAB_MetaBoxRegisterHook{
 		foreach($meta_fields as $field){
 			//Clean checkboxes
 			if($field['type'] == 'bool'){
-				delete_post_meta($post_id, $field['field']);
+				delete_post_meta($post_id, $field['name']);
 			}
 			
-			if ( ! isset( $_POST[$field['field']] ) || ! wp_verify_nonce( $_POST[$field['field'].'_field'], basename(__FILE__) ) ) {
+			if ( ! isset( $_POST[$field['name']] ) || ! wp_verify_nonce( $_POST[$field['name'].'_field'], basename(__FILE__) ) ) {
 				continue;
 			}
 			
 			switch($field['type']){
+				case 'url':
+					$source_meta[$field['name']] = esc_url_raw($_POST[$field['name']]);
 				case 'text':
+					$source_meta[$field['name']] = sanitize_textarea_field( $_POST[$field['name']] );
 				case 'bool':
-					$source_meta[$field['field']] = esc_textarea( $_POST[$field['field']] );
+					$source_meta[$field['name']] = sanitize_text_field($_POST[$field['name']]);
 					break;
 				case 'html':
-					$source_meta[$field['field']] = $_POST[$field['field']];
+					$source_meta[$field['name']] = esc_html($_POST[$field['name']]);
 					break;
 				default:
-					$source_meta[$field['field']] = $_POST[$field['field']];
+					$source_meta[$field['name']] = sanitize_text_field($_POST[$field['name']]);
 					break;
 			}
 		}
