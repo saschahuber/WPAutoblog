@@ -193,7 +193,7 @@ class WPAB_MetaBoxRegisterHook{
 					$source_meta[$field['name']] = sanitize_text_field($_POST[$field['name']]);
 					break;
 				case 'html':
-					$source_meta[$field['name']] = esc_html($_POST[$field['name']]);
+					$source_meta[$field['name']] = sanitize_text_field($_POST[$field['name']]);
 					break;
 				default:
 					$source_meta[$field['name']] = sanitize_text_field($_POST[$field['name']]);
