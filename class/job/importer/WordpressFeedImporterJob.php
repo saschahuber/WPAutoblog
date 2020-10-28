@@ -53,8 +53,10 @@ class WPAB_WordpressFeedImporterJob{
 		$keywords = $this->get_keywords($feed_source);
 		
 		foreach($feed_items as $feed_item){
-			if(!$this->post_exists($feed_item['link']) && $this->contains_keywords($feed_item, $keywords)){
-				$this->create_post($feed_item, $feed_source);
+			if(!$this->post_exists($feed_item['link'])){
+				if(empty($keywords) || $this->contains_keywords($feed_item, $keywords)){
+					$this->create_post($feed_item, $feed_source);
+				}
 			}
 		}
 	}
@@ -74,6 +76,12 @@ class WPAB_WordpressFeedImporterJob{
 	
 	function get_feed($feed_url){
 		$content = file_get_contents($feed_url);
+		
+		$response = wp_remote_get($feed_url);
+		$content = wp_remote_retrieve_body($response);
+
+		print_r($body);
+
 		$x = new SimpleXmlElement($content);
 		
 		$posts = array();
