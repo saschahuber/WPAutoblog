@@ -74,9 +74,7 @@ class WPAB_WordpressFeedImporterJob{
 		return false;
 	}
 	
-	function get_feed($feed_url){
-		$content = file_get_contents($feed_url);
-		
+	function get_feed($feed_url){		
 		$response = wp_remote_get($feed_url);
 		$content = wp_remote_retrieve_body($response);
 
