@@ -1,5 +1,5 @@
 === WP Autoblog ===
-Contributors: @saschahuber
+Contributors: saschahuber
 Donate link: https://sascha-huber.com
 Tags: aggregator, news aggregator, rss aggregator, autoblog
 Requires at least: 5.1
